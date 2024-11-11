@@ -74,7 +74,8 @@ func (service *GenerateQRCodePaymentUseCaseImpl) Execute(
 	//Block this code below until this Channel be empty (by reading with <-ch)
 	ch <- true
 
-	qrOrder.TicketNumber = service.orderRepository.GetNextTicketNumber(ctx, date)
+	// TODO: rever pq precisa gerar ticket aqui. Acho que posso gerar dentro do MS de order
+	// qrOrder.TicketNumber = service.orderRepository.GetNextTicketNumber(ctx, date)
 
 	payment := dto.Payment{
 		TotalPrice:  qrOrder.TotalPrice,
