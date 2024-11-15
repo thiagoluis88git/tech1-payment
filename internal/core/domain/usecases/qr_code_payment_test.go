@@ -19,9 +19,8 @@ func newQRCodeOrder() dto.QRCodeOrder {
 
 func mockQRCodeOrder() dto.Order {
 	return dto.Order{
-		TotalPrice:   124.53,
-		TicketNumber: 3,
-		PaymentID:    uint(7),
+		TotalPrice: 124.53,
+		PaymentID:  uint(7),
 	}
 }
 
@@ -60,7 +59,6 @@ func TestQRCodePaymentUseCase(t *testing.T) {
 		channel := make(chan bool, 1)
 		date := mockDate()
 
-		mockOrderRepo.On("GetNextTicketNumber", ctx, date).Return(3)
 		mockPaymentRepo.On("CreatePaymentOrder", ctx, mockPayment()).Return(dto.PaymentResponse{
 			PaymentId:        uint(7),
 			PaymentGatewayId: "123456",
@@ -96,7 +94,6 @@ func TestQRCodePaymentUseCase(t *testing.T) {
 		channel := make(chan bool, 1)
 		date := mockDate()
 
-		mockOrderRepo.On("GetNextTicketNumber", ctx, date).Return(3)
 		mockPaymentRepo.On("CreatePaymentOrder", ctx, mockPayment()).Return(dto.PaymentResponse{
 			PaymentId:        uint(7),
 			PaymentGatewayId: "123456",
@@ -133,7 +130,6 @@ func TestQRCodePaymentUseCase(t *testing.T) {
 		channel := make(chan bool, 1)
 		date := mockDate()
 
-		mockOrderRepo.On("GetNextTicketNumber", ctx, date).Return(3)
 		mockPaymentRepo.On("CreatePaymentOrder", ctx, mockPayment()).Return(dto.PaymentResponse{
 			PaymentId:        uint(7),
 			PaymentGatewayId: "123456",
@@ -172,7 +168,6 @@ func TestQRCodePaymentUseCase(t *testing.T) {
 		channel := make(chan bool, 1)
 		date := mockDate()
 
-		mockOrderRepo.On("GetNextTicketNumber", ctx, date).Return(3)
 		mockPaymentRepo.On("CreatePaymentOrder", ctx, mockPayment()).Return(dto.PaymentResponse{
 			PaymentId:        uint(7),
 			PaymentGatewayId: "123456",
@@ -205,7 +200,6 @@ func TestQRCodePaymentUseCase(t *testing.T) {
 		channel := make(chan bool, 1)
 		date := mockDate()
 
-		mockOrderRepo.On("GetNextTicketNumber", ctx, date).Return(3)
 		mockPaymentRepo.On("CreatePaymentOrder", ctx, mockPayment()).Return(dto.PaymentResponse{}, &responses.NetworkError{
 			Code: 500,
 		})

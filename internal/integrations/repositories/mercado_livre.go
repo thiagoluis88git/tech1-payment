@@ -53,7 +53,7 @@ func (repo *MercadoLivreRepositoryImpl) Generate(ctx context.Context, token stri
 		ExpirationDate:    expirationDate.Format("2006-01-02T15:04:05.999Z07:00"),
 		ExternalReference: fmt.Sprintf("%v|%v", strconv.Itoa(orderID), strconv.Itoa(int(form.PaymentID))),
 		Items:             items,
-		Title:             fmt.Sprintf("FastFood Pagamento - Nr: %v", form.TicketNumber),
+		Title:             fmt.Sprintf("FastFood Pagamento - CPF: %v", form.CustomerCPF),
 		NotificationUrl:   repo.webHook,
 	}
 

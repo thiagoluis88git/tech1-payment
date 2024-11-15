@@ -22,6 +22,7 @@ func setup() {
 	os.Setenv(environment.WebhookMercadoLivrePaymentURL, "WEBHOOK")
 	os.Setenv(environment.QRCodeGatewayToken, "token")
 	os.Setenv(environment.Region, "Region")
+	os.Setenv(environment.OrdersRootAPI, "OrdersRoot")
 }
 
 func TestDatabaseConfig(t *testing.T) {

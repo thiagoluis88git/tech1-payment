@@ -24,12 +24,12 @@ func setup() {
 	os.Setenv(environment.WebhookMercadoLivrePaymentURL, "WEBHOOK")
 	os.Setenv(environment.QRCodeGatewayToken, "TOKEN")
 	os.Setenv(environment.Region, "Region")
+	os.Setenv(environment.OrdersRootAPI, "OrdersRoot")
 }
 
 func mockOrder() dto.Order {
 	return dto.Order{
-		TotalPrice:   123.45,
-		TicketNumber: 12,
+		TotalPrice: 123.45,
 		OrderProduct: []dto.OrderProduct{
 			{
 				ProductID:    uint(1),

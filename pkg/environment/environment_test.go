@@ -18,6 +18,7 @@ func setup() {
 	os.Setenv(environment.QRCodeGatewayToken, "QRCodeGatewayToken")
 	os.Setenv(environment.Region, "Region")
 	os.Setenv(environment.WebhookMercadoLivrePaymentURL, "WebhookMercadoLivrePaymentURL")
+	os.Setenv(environment.OrdersRootAPI, "OrdersRoot")
 }
 
 func TestEnvironment(t *testing.T) {
@@ -25,13 +26,10 @@ func TestEnvironment(t *testing.T) {
 	setup()
 
 	t.Run("got success when loading variables", func(t *testing.T) {
-		t.Parallel()
-
 		environment.LoadEnvironmentVariables()
 	})
 
 	t.Run("got success when initializing environment", func(t *testing.T) {
-		t.Parallel()
 		environment.LoadEnvironmentVariables()
 
 		assert.Equal(t, "DBHost", environment.GetDBHost())
@@ -43,5 +41,6 @@ func TestEnvironment(t *testing.T) {
 		assert.Equal(t, "QRCodeGatewayToken", environment.GetQRCodeGatewayToken())
 		assert.Equal(t, "Region", environment.GetRegion())
 		assert.Equal(t, "WebhookMercadoLivrePaymentURL", environment.GetWebhookMercadoLivrePaymentURL())
+		assert.Equal(t, "OrdersRoot", environment.GetOrdersRootAPI())
 	})
 }

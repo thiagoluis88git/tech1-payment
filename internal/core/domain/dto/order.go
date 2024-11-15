@@ -8,7 +8,6 @@ type Order struct {
 	CustomerCPF  *string        `json:"customerCPF"`
 	PaymentID    uint           `json:"paymentId" validate:"required"`
 	OrderProduct []OrderProduct `json:"orderProducts" validate:"required"`
-	TicketNumber int
 }
 
 type QRCodeOrder struct {
@@ -16,7 +15,6 @@ type QRCodeOrder struct {
 	TotalPrice   float64        `json:"totalPrice" validate:"required"`
 	CustomerCPF  *string        `json:"customerCPF"`
 	OrderProduct []OrderProduct `json:"orderProducts" validate:"required"`
-	TicketNumber int
 	PaymentID    uint
 }
 

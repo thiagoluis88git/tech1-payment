@@ -25,6 +25,7 @@ func setup() {
 	os.Setenv(environment.WebhookMercadoLivrePaymentURL, "WEBHOOK")
 	os.Setenv(environment.QRCodeGatewayToken, "token")
 	os.Setenv(environment.Region, "Region")
+	os.Setenv(environment.OrdersRootAPI, "OrdersRoot")
 }
 
 type MockRoundTripper struct {

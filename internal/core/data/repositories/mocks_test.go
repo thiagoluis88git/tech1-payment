@@ -63,22 +63,13 @@ func (suite *RepositoryTestSuite) TearDownSuite() {
 
 func (suite *RepositoryTestSuite) SetupTest() {
 	err := suite.db.Connection.AutoMigrate(
-		&model.Order{},
-		&model.OrderProduct{},
 		&model.Payment{},
 	)
 	suite.NoError(err)
 }
 
 func (suite *RepositoryTestSuite) TearDownTest() {
-	suite.db.Connection.Exec("DROP TABLE IF EXISTS customers CASCADE;")
-	suite.db.Connection.Exec("DROP TABLE IF EXISTS products CASCADE;")
-	suite.db.Connection.Exec("DROP TABLE IF EXISTS product_images CASCADE;")
-	suite.db.Connection.Exec("DROP TABLE IF EXISTS combo_products CASCADE;")
-	suite.db.Connection.Exec("DROP TABLE IF EXISTS orders CASCADE;")
-	suite.db.Connection.Exec("DROP TABLE IF EXISTS order_products CASCADE;")
 	suite.db.Connection.Exec("DROP TABLE IF EXISTS payments CASCADE;")
-	suite.db.Connection.Exec("DROP TABLE IF EXISTS order_ticket_numbers CASCADE;")
 }
 
 func SetupDBMocks() (*gorm.DB, sqlmock.Sqlmock, error) {

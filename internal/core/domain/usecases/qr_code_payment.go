@@ -94,7 +94,6 @@ func (service *GenerateQRCodePaymentUseCaseImpl) Execute(
 		TotalPrice:   qrOrder.TotalPrice,
 		CustomerCPF:  qrOrder.CustomerCPF,
 		OrderProduct: []dto.OrderProduct(qrOrder.OrderProduct),
-		TicketNumber: qrOrder.TicketNumber,
 		PaymentID:    qrOrder.PaymentID,
 	}
 

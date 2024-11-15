@@ -32,7 +32,6 @@ func (repo OrderRepositoryImpl) CreatePayingOrder(ctx context.Context, order dto
 		OrderStatus:  order.OrderStatus,
 		CustomerCPF:  order.CustomerCPF,
 		PaymentID:    order.PaymentID,
-		TicketNumber: order.TicketNumber,
 		OrderProduct: products,
 	}
 

@@ -316,7 +316,7 @@ func TestRequestResponseHelper(t *testing.T) {
 		t.Parallel()
 
 		responseHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			var destination dto.Token
+			var destination dto.Payment
 			err := httpserver.DecodeJSONBody(w, r, &destination)
 
 			assert.Error(t, err)
@@ -328,7 +328,7 @@ func TestRequestResponseHelper(t *testing.T) {
 		ts := httptest.NewServer(responseHandler)
 		defer ts.Close()
 
-		req, _ := http.NewRequest(http.MethodPost, ts.URL+"/mock", strings.NewReader(`{"name": "Hamburguer"}`))
+		req, _ := http.NewRequest(http.MethodPost, ts.URL+"/mock", strings.NewReader(`{"totalPrice": 123.54}`))
 		req.Header.Add("Content-Type", "application/json")
 
 		response, err := ts.Client().Do(req)
