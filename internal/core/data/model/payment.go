@@ -13,8 +13,7 @@ const (
 
 type Payment struct {
 	gorm.Model
-	CustomerID    *uint
-	Customer      *Customer
+	CustomerCPF   *string
 	TotalPrice    float64
 	PaymentStatus string
 	PaymentType   string

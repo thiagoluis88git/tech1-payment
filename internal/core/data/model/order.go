@@ -1,10 +1,6 @@
 package model
 
-import (
-	"time"
-
-	"gorm.io/gorm"
-)
+import "time"
 
 const (
 	OrderStatusPaying       = "Em pagamento"
@@ -16,28 +12,22 @@ const (
 )
 
 type Order struct {
-	gorm.Model
-	OrderStatus    string
-	TotalPrice     float64
-	PaymentID      uint
-	CustomerID     *uint
-	Customer       *Customer
-	TicketNumber   int
-	PreparingAt    *time.Time
-	DoneAt         *time.Time
-	DeliveredAt    *time.Time
-	NotDeliveredAt *time.Time
-	OrderProduct   []OrderProduct
+	OrderStatus  string
+	TotalPrice   float64        `json:"totalPrice" validate:"required"`
+	CustomerID   *uint          `json:"customerId"`
+	PaymentID    uint           `json:"paymentId" validate:"required"`
+	OrderProduct []OrderProduct `json:"orderProducts" validate:"required"`
+	TicketNumber int
 }
 
 type OrderProduct struct {
-	gorm.Model
-	OrderID   uint
-	ProductID uint
-	Product   Product
+	ProductID    uint    `json:"productId" validate:"required"`
+	ProductPrice float64 `json:"productPrice" validate:"required"`
 }
 
-type OrderTicketNumber struct {
-	Date         int64 `gorm:"index;unique"`
-	TicketNumber int
+type OrderResponse struct {
+	OrderId      uint      `json:"orderId"`
+	OrderDate    time.Time `json:"orderDate"`
+	TicketNumber int       `json:"ticketNumber"`
+	OrderStatus  string    `json:"orderStatus"`
 }

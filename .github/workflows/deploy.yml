@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Fastfood Image Version'     
+        description: 'MS Payment Image Version'     
         required: true
 
 jobs:
@@ -27,4 +27,4 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         push: true
-        tags: thiagoluis88/fastfood-app:${{ github.event.inputs.version }}
+        tags: thiagoluis88/fastfood-payment:${{ github.event.inputs.version }}

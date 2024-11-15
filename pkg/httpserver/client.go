@@ -25,18 +25,77 @@ func NewHTTPClient() *http.Client {
 	return &client
 }
 
-func DoRequest[T any](
+func DoGetRequest[T any](
 	ctx context.Context,
 	client *http.Client,
 	endpoint string,
 	token *string,
-	formData io.Reader,
-	method string,
 	dataResponse T,
 ) (T, error) {
 	var empty T
 
-	req, err := http.NewRequestWithContext(ctx, method, endpoint, formData)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, endpoint, nil)
+
+	if err != nil {
+		return empty, &responses.NetworkError{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		}
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	if token != nil {
+		req.Header.Set("Authorization", *token)
+	}
+
+	response, err := client.Do(req)
+
+	if err != nil {
+		return empty, responses.GetNetworkError(err.(*url.Error))
+	}
+
+	defer response.Body.Close()
+
+	body, err := io.ReadAll(response.Body)
+
+	if err != nil {
+		return empty, &responses.NetworkError{
+			Code:    http.StatusUnprocessableEntity,
+			Message: err.Error(),
+		}
+	}
+
+	bodyMessage := string(body)
+	err = responses.IsNetworkResponseOk(response, bodyMessage)
+
+	if err != nil {
+		return empty, err
+	}
+
+	err = json.Unmarshal(body, &dataResponse)
+
+	if err != nil {
+		return empty, &responses.NetworkError{
+			Code:    http.StatusUnprocessableEntity,
+			Message: err.Error(),
+		}
+	}
+
+	return dataResponse, nil
+}
+
+func DoPostRequest[T any](
+	ctx context.Context,
+	client *http.Client,
+	endpoint string,
+	reader io.Reader,
+	token *string,
+	dataResponse T,
+) (T, error) {
+	var empty T
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, reader)
 
 	if err != nil {
 		return empty, &responses.NetworkError{

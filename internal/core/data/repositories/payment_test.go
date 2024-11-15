@@ -42,10 +42,10 @@ func (suite *RepositoryTestSuite) TestCreatePaymentOrderWithUnknownUserError() {
 
 	repo := repositories.NewPaymentRepository(suite.db)
 
-	unknownUser := uint(2)
+	unknownUser := "12345678910"
 
 	newPayment := dto.Payment{
-		CustomerID:  &unknownUser,
+		CustomerCPF: &unknownUser,
 		TotalPrice:  58.90,
 		PaymentType: "Crédito",
 	}

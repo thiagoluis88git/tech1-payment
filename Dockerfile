@@ -20,7 +20,7 @@ RUN \
   CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
   go build \
   -ldflags "-s -d -w" \
-  -o /FasfoodApp cmd/api/main.go
+  -o /FasfoodPayment cmd/api/main.go
 
 FROM scratch
 
@@ -29,9 +29,9 @@ WORKDIR /app
 # Copy Certificate
 COPY --from=build-stage /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
-COPY --from=build-stage /FasfoodApp /FasfoodApp
+COPY --from=build-stage /FasfoodPayment /FasfoodPayment
 COPY --from=build-stage /go/src/docs/ /docs/
 
 EXPOSE 3210 3211
 
-ENTRYPOINT ["/FasfoodApp"]
+ENTRYPOINT ["/FasfoodPayment"]
