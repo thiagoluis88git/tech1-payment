@@ -28,15 +28,24 @@ func NewOrderRemoteDataSource(client *http.Client, rootURL string) OrderRemoteDa
 func (ds *OrderRemoteDataSourceImpl) CreatePayingOrder(ctx context.Context, order model.Order) (model.OrderResponse, error) {
 	endpoint := fmt.Sprintf("%v/%v", ds.rootURL, "orders")
 
+	body, err := order.GetFormBody()
+
+	if err != nil {
+		return model.OrderResponse{}, err
+	}
+
 	response, err := httpserver.DoPostRequest(
 		ctx,
 		ds.client,
 		endpoint,
-		order,
+		body,
+		nil,
 		model.OrderResponse{},
 	)
 
 	if err != nil {
-
+		return model.OrderResponse{}, err
 	}
+
+	return response, nil
 }

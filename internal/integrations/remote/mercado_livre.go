@@ -37,13 +37,12 @@ func (ds *MercadoLivreRemoteDataSource) Generate(ctx context.Context, token stri
 		}
 	}
 
-	response, err := httpserver.DoRequest(
+	response, err := httpserver.DoPostRequest(
 		ctx,
 		ds.client,
 		ds.endpoint,
-		&token,
 		body,
-		http.MethodPost,
+		&token,
 		model.QRCodeData{},
 	)
 
@@ -55,13 +54,11 @@ func (ds *MercadoLivreRemoteDataSource) Generate(ctx context.Context, token stri
 }
 
 func (ds *MercadoLivreRemoteDataSource) GetPaymentData(ctx context.Context, token string, endpoint string) (model.MercadoLivrePaymentResponse, error) {
-	response, err := httpserver.DoRequest(
+	response, err := httpserver.DoGetRequest(
 		ctx,
 		ds.client,
 		endpoint,
 		&token,
-		nil,
-		http.MethodGet,
 		model.MercadoLivrePaymentResponse{},
 	)
 

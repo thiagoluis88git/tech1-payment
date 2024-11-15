@@ -27,6 +27,7 @@ const (
 	DBPort                        = "DB_PORT"
 	DBName                        = "POSTGRES_DB"
 	Region                        = "AWS_REGION"
+	OrdersRootAPI                 = "ORDERS_ROOT_API"
 )
 
 type Environment struct {
@@ -39,6 +40,7 @@ type Environment struct {
 	dbUser                        string
 	dbPassword                    string
 	region                        string
+	ordersRootAPI                 string
 }
 
 func LoadEnvironmentVariables() {
@@ -61,6 +63,7 @@ func LoadEnvironmentVariables() {
 	dbPassword := getEnvironmentVariable(DBPassword)
 	dbName := getEnvironmentVariable(DBName)
 	region := getEnvironmentVariable(Region)
+	ordersRootAPI := getEnvironmentVariable(OrdersRootAPI)
 
 	once := &sync.Once{}
 
@@ -75,6 +78,7 @@ func LoadEnvironmentVariables() {
 			dbName:                        dbName,
 			webhookMercadoLivrePaymentURL: webhookMercadoLivrePaymentURL,
 			region:                        region,
+			ordersRootAPI:                 ordersRootAPI,
 		}
 	})
 }
@@ -123,4 +127,8 @@ func GetDBPassword() string {
 
 func GetRegion() string {
 	return singleton.region
+}
+
+func GetOrdersRootAPI() string {
+	return singleton.ordersRootAPI
 }

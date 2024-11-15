@@ -1,6 +1,10 @@
 package model
 
-import "time"
+import (
+	"bytes"
+	"encoding/json"
+	"time"
+)
 
 const (
 	OrderStatusPaying       = "Em pagamento"
@@ -14,7 +18,7 @@ const (
 type Order struct {
 	OrderStatus  string
 	TotalPrice   float64        `json:"totalPrice" validate:"required"`
-	CustomerID   *uint          `json:"customerId"`
+	CustomerCPF  *string        `json:"customerCPF"`
 	PaymentID    uint           `json:"paymentId" validate:"required"`
 	OrderProduct []OrderProduct `json:"orderProducts" validate:"required"`
 	TicketNumber int
@@ -23,6 +27,16 @@ type Order struct {
 type OrderProduct struct {
 	ProductID    uint    `json:"productId" validate:"required"`
 	ProductPrice float64 `json:"productPrice" validate:"required"`
+}
+
+func (o *Order) GetFormBody() (*bytes.Buffer, error) {
+	jsonValue, err := json.Marshal(o)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return bytes.NewBuffer(jsonValue), nil
 }
 
 type OrderResponse struct {

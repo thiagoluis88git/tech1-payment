@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/thiagoluis88git/tech1-payment/internal/core/data/remote"
 	"github.com/thiagoluis88git/tech1-payment/internal/core/data/repositories"
 	"github.com/thiagoluis88git/tech1-payment/internal/core/domain/usecases"
 	"github.com/thiagoluis88git/tech1-payment/internal/core/handler"
 	"github.com/thiagoluis88git/tech1-payment/internal/core/webhook"
 	external "github.com/thiagoluis88git/tech1-payment/internal/integrations"
-	"github.com/thiagoluis88git/tech1-payment/internal/integrations/remote"
+	integrationDS "github.com/thiagoluis88git/tech1-payment/internal/integrations/remote"
 	extRepo "github.com/thiagoluis88git/tech1-payment/internal/integrations/repositories"
 	"github.com/thiagoluis88git/tech1-payment/pkg/database"
 	"github.com/thiagoluis88git/tech1-payment/pkg/environment"
@@ -73,12 +74,15 @@ func main() {
 
 	httpClient := httpserver.NewHTTPClient()
 
+	orderDS := remote.NewOrderRemoteDataSource(httpClient, environment.GetOrdersRootAPI())
+
 	paymentRepo := repositories.NewPaymentRepository(db)
+	orderRepo := repositories.NewOrderRepository(orderDS)
 	paymentGateway := external.NewPaymentGateway()
 	payOrderUseCase := usecases.NewPayOrderUseCase(paymentRepo, paymentGateway)
 	getPaymentTypesUseCase := usecases.NewGetPaymentTypesUseCasee(paymentRepo)
 
-	qrCodeRemoteDataSource := remote.NewMercadoLivreDataSource(httpClient)
+	qrCodeRemoteDataSource := integrationDS.NewMercadoLivreDataSource(httpClient)
 	extQRCodeGeneratorRepository := extRepo.NewMercadoLivreRepository(qrCodeRemoteDataSource)
 	generateQRCodePaymentUseCase := usecases.NewGenerateQRCodePaymentUseCase(
 		extQRCodeGeneratorRepository,

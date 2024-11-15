@@ -22,7 +22,7 @@ func TestHttpClient(t *testing.T) {
 		assert.NotEmpty(t, client)
 	})
 
-	t.Run("got success when calling DoRequest client", func(t *testing.T) {
+	t.Run("got success when calling DoGetRequest client", func(t *testing.T) {
 		t.Parallel()
 
 		responseHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -34,13 +34,13 @@ func TestHttpClient(t *testing.T) {
 		ts := httptest.NewServer(responseHandler)
 		defer ts.Close()
 
-		response, err := httpserver.DoRequest(context.TODO(), ts.Client(), ts.URL, nil, nil, http.MethodGet, dto.Token{})
+		response, err := httpserver.DoGetRequest(context.TODO(), ts.Client(), ts.URL, nil, dto.Token{})
 
 		assert.NoError(t, err)
 		assert.NotEmpty(t, response)
 	})
 
-	t.Run("got error on invalid json when calling DoRequest client", func(t *testing.T) {
+	t.Run("got error on invalid json when calling DoGetRequest client", func(t *testing.T) {
 		t.Parallel()
 
 		responseHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -50,20 +50,20 @@ func TestHttpClient(t *testing.T) {
 		ts := httptest.NewServer(responseHandler)
 		defer ts.Close()
 
-		response, err := httpserver.DoRequest(context.TODO(), ts.Client(), ts.URL, nil, nil, http.MethodGet, dto.Token{})
+		response, err := httpserver.DoGetRequest(context.TODO(), ts.Client(), ts.URL, nil, dto.Token{})
 
 		assert.Error(t, err)
 		assert.Empty(t, response)
 	})
 
-	t.Run("got error when calling DoRequest client", func(t *testing.T) {
+	t.Run("got error when calling DoGetRequest client", func(t *testing.T) {
 		t.Parallel()
 
 		client := httpserver.NewHTTPClient()
 
 		assert.NotEmpty(t, client)
 
-		response, err := httpserver.DoRequest(context.TODO(), client, "http://localhost", nil, nil, http.MethodGet, dto.Token{})
+		response, err := httpserver.DoGetRequest(context.TODO(), client, "http://localhost", nil, dto.Token{})
 
 		assert.Error(t, err)
 		assert.Empty(t, response)
