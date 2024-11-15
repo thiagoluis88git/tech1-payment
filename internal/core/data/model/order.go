@@ -45,3 +45,7 @@ type OrderResponse struct {
 	TicketNumber int       `json:"ticketNumber"`
 	OrderStatus  string    `json:"orderStatus"`
 }
+
+type DefaultResponse struct {
+	Message string `json:"message"`
+}

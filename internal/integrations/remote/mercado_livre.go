@@ -54,9 +54,10 @@ func (ds *MercadoLivreRemoteDataSource) Generate(ctx context.Context, token stri
 }
 
 func (ds *MercadoLivreRemoteDataSource) GetPaymentData(ctx context.Context, token string, endpoint string) (model.MercadoLivrePaymentResponse, error) {
-	response, err := httpserver.DoGetRequest(
+	response, err := httpserver.DoNoBodyRequest(
 		ctx,
 		ds.client,
+		http.MethodGet,
 		endpoint,
 		&token,
 		model.MercadoLivrePaymentResponse{},

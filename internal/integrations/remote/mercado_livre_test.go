@@ -5,40 +5,19 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/thiagoluis88git/tech1-payment/internal/integrations/model"
 	"github.com/thiagoluis88git/tech1-payment/internal/integrations/remote"
 	"github.com/thiagoluis88git/tech1-payment/pkg/environment"
+	"github.com/thiagoluis88git/tech1-payment/pkg/mocks"
 	"github.com/thiagoluis88git/tech1-payment/pkg/responses"
 )
 
-func setup() {
-	os.Setenv(environment.QRCodeGatewayRootURL, "ROOT_URL")
-	os.Setenv(environment.DBHost, "HOST")
-	os.Setenv(environment.DBPort, "1234")
-	os.Setenv(environment.DBUser, "User")
-	os.Setenv(environment.DBPassword, "Pass")
-	os.Setenv(environment.DBName, "Name")
-	os.Setenv(environment.WebhookMercadoLivrePaymentURL, "WEBHOOK")
-	os.Setenv(environment.QRCodeGatewayToken, "token")
-	os.Setenv(environment.Region, "Region")
-	os.Setenv(environment.OrdersRootAPI, "OrdersRoot")
-}
-
-type MockRoundTripper struct {
-	Response *http.Response
-}
-
-func (trip *MockRoundTripper) RoundTrip(_ *http.Request) (*http.Response, error) {
-	return trip.Response, nil
-}
-
 func TestMercadoLivreRemote(t *testing.T) {
 	t.Parallel()
-	setup()
+	mocks.Setup()
 
 	t.Run("got success when generate qrcode remote", func(t *testing.T) {
 		t.Parallel()
@@ -55,7 +34,7 @@ func TestMercadoLivreRemote(t *testing.T) {
 		resultExpected := recorder.Result()
 
 		mockClient := &http.Client{
-			Transport: &MockRoundTripper{
+			Transport: &mocks.MockRoundTripper{
 				Response: resultExpected,
 			},
 		}
@@ -83,7 +62,7 @@ func TestMercadoLivreRemote(t *testing.T) {
 		resultExpected := recorder.Result()
 
 		mockClient := &http.Client{
-			Transport: &MockRoundTripper{
+			Transport: &mocks.MockRoundTripper{
 				Response: resultExpected,
 			},
 		}
@@ -116,7 +95,7 @@ func TestMercadoLivreRemote(t *testing.T) {
 		resultExpected := recorder.Result()
 
 		mockClient := &http.Client{
-			Transport: &MockRoundTripper{
+			Transport: &mocks.MockRoundTripper{
 				Response: resultExpected,
 			},
 		}
@@ -148,7 +127,7 @@ func TestMercadoLivreRemote(t *testing.T) {
 		resultExpected := recorder.Result()
 
 		mockClient := &http.Client{
-			Transport: &MockRoundTripper{
+			Transport: &mocks.MockRoundTripper{
 				Response: resultExpected,
 			},
 		}

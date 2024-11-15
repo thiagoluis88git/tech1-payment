@@ -11,6 +11,8 @@ import (
 
 type OrderRemoteDataSource interface {
 	CreatePayingOrder(ctx context.Context, order model.Order) (model.OrderResponse, error)
+	DeleteOrder(ctx context.Context, orderID uint) error
+	FinishOrderWithPayment(ctx context.Context, orderID uint, paymentID uint) error
 }
 
 type OrderRemoteDataSourceImpl struct {
@@ -48,4 +50,42 @@ func (ds *OrderRemoteDataSourceImpl) CreatePayingOrder(ctx context.Context, orde
 	}
 
 	return response, nil
+}
+
+func (ds *OrderRemoteDataSourceImpl) DeleteOrder(ctx context.Context, orderID uint) error {
+	endpoint := fmt.Sprintf("%v/%v/%d", ds.rootURL, "orders", orderID)
+
+	_, err := httpserver.DoNoBodyRequest(
+		ctx,
+		ds.client,
+		http.MethodDelete,
+		endpoint,
+		nil,
+		model.DefaultResponse{},
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (ds *OrderRemoteDataSourceImpl) FinishOrderWithPayment(ctx context.Context, orderID uint, paymentID uint) error {
+	endpoint := fmt.Sprintf("%v/%v/%v/%d/%d", ds.rootURL, "orders", "finish", orderID, paymentID)
+
+	_, err := httpserver.DoNoBodyRequest(
+		ctx,
+		ds.client,
+		http.MethodPut,
+		endpoint,
+		nil,
+		model.DefaultResponse{},
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -25,16 +25,17 @@ func NewHTTPClient() *http.Client {
 	return &client
 }
 
-func DoGetRequest[T any](
+func DoNoBodyRequest[T any](
 	ctx context.Context,
 	client *http.Client,
+	method string,
 	endpoint string,
 	token *string,
 	dataResponse T,
 ) (T, error) {
 	var empty T
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, endpoint, nil)
+	req, err := http.NewRequestWithContext(ctx, method, endpoint, nil)
 
 	if err != nil {
 		return empty, &responses.NetworkError{
