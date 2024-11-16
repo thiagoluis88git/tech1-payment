@@ -3,7 +3,9 @@ package environment
 import (
 	"flag"
 	"log"
+	"net/url"
 	"os"
+	"strings"
 	"sync"
 
 	"github.com/joho/godotenv"
@@ -21,24 +23,21 @@ const (
 	QRCodeGatewayRootURL          = "QR_CODE_GATEWAY_ROOT_URL"
 	QRCodeGatewayToken            = "QR_CODE_GATEWAY_TOKEN"
 	WebhookMercadoLivrePaymentURL = "WEBHOOK_MERCADO_LIVRE_PAYMENT"
-	DBHost                        = "DB_HOST"
-	DBUser                        = "POSTGRES_USER"
-	DBPassword                    = "POSTGRES_PASSWORD"
-	DBPort                        = "DB_PORT"
-	DBName                        = "POSTGRES_DB"
+	MongoHost                     = "MONGO_HOST"
+	MongoPassword                 = "MONGO_PASSWORD"
+	MongoDBName                   = "MONGO_DB_NAME"
 	Region                        = "AWS_REGION"
 	OrdersRootAPI                 = "ORDERS_ROOT_API"
+	passwordFieldToReplace        = "<db_password>"
 )
 
 type Environment struct {
 	qrCodeGatewayRootURL          string
 	qrCodeGatewayToken            string
 	webhookMercadoLivrePaymentURL string
-	dbHost                        string
-	dbPort                        string
-	dbName                        string
-	dbUser                        string
-	dbPassword                    string
+	mongoHost                     string
+	mongoPassword                 string
+	mongoDBName                   string
 	region                        string
 	ordersRootAPI                 string
 }
@@ -57,11 +56,9 @@ func LoadEnvironmentVariables() {
 	qrCodeGatewayRootURL := getEnvironmentVariable(QRCodeGatewayRootURL)
 	qrCodeGatewayToken := getEnvironmentVariable(QRCodeGatewayToken)
 	webhookMercadoLivrePaymentURL := getEnvironmentVariable(WebhookMercadoLivrePaymentURL)
-	dbHost := getEnvironmentVariable(DBHost)
-	dbPort := getEnvironmentVariable(DBPort)
-	dbUser := getEnvironmentVariable(DBUser)
-	dbPassword := getEnvironmentVariable(DBPassword)
-	dbName := getEnvironmentVariable(DBName)
+	mongoHost := getEnvironmentVariable(MongoHost)
+	mongoPassword := getEnvironmentVariable(MongoPassword)
+	mongoDBName := getEnvironmentVariable(MongoDBName)
 	region := getEnvironmentVariable(Region)
 	ordersRootAPI := getEnvironmentVariable(OrdersRootAPI)
 
@@ -71,12 +68,10 @@ func LoadEnvironmentVariables() {
 		singleton = &Environment{
 			qrCodeGatewayRootURL:          qrCodeGatewayRootURL,
 			qrCodeGatewayToken:            qrCodeGatewayToken,
-			dbHost:                        dbHost,
-			dbPort:                        dbPort,
-			dbUser:                        dbUser,
-			dbPassword:                    dbPassword,
-			dbName:                        dbName,
 			webhookMercadoLivrePaymentURL: webhookMercadoLivrePaymentURL,
+			mongoHost:                     mongoHost,
+			mongoPassword:                 mongoPassword,
+			mongoDBName:                   mongoDBName,
 			region:                        region,
 			ordersRootAPI:                 ordersRootAPI,
 		}
@@ -105,24 +100,15 @@ func GetQRCodeGatewayToken() string {
 	return singleton.qrCodeGatewayToken
 }
 
-func GetDBHost() string {
-	return singleton.dbHost
+func GetMongoHost() string {
+	host := singleton.mongoHost
+	host = strings.ReplaceAll(host, passwordFieldToReplace, url.QueryEscape(singleton.mongoPassword))
+
+	return host
 }
 
-func GetDBPort() string {
-	return singleton.dbPort
-}
-
-func GetDBName() string {
-	return singleton.dbName
-}
-
-func GetDBUser() string {
-	return singleton.dbUser
-}
-
-func GetDBPassword() string {
-	return singleton.dbPassword
+func GetMongoDBName() string {
+	return singleton.mongoDBName
 }
 
 func GetRegion() string {

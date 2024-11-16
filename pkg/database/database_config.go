@@ -19,6 +19,6 @@ func ConfigMongo(uri string, databaseName string) (*Database, error) {
 	}
 
 	return &Database{
-		Conn: client.Database("databaseName"),
+		Conn: client.Database(databaseName),
 	}, nil
 }

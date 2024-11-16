@@ -16,6 +16,7 @@ const (
 	_defaultReadTimeout     = 10 * time.Second
 	_defaultWriteTimeout    = 10 * time.Second
 	_defaultShutdownTimeout = 6 * time.Second
+	port                    = 5210
 )
 
 type Server struct {
@@ -29,7 +30,7 @@ func New(handler http.Handler) *Server {
 		Handler:      handler,
 		ReadTimeout:  _defaultReadTimeout,
 		WriteTimeout: _defaultWriteTimeout,
-		Addr:         fmt.Sprintf(":%d", 3210),
+		Addr:         fmt.Sprintf(":%d", port),
 	}
 
 	s := &Server{

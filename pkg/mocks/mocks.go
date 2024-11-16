@@ -9,11 +9,9 @@ import (
 
 func Setup() {
 	os.Setenv(environment.QRCodeGatewayRootURL, "ROOT_URL")
-	os.Setenv(environment.DBHost, "HOST")
-	os.Setenv(environment.DBPort, "1234")
-	os.Setenv(environment.DBUser, "User")
-	os.Setenv(environment.DBPassword, "Pass")
-	os.Setenv(environment.DBName, "Name")
+	os.Setenv(environment.MongoHost, "HOST")
+	os.Setenv(environment.MongoPassword, "Pass")
+	os.Setenv(environment.MongoDBName, "MongoDBName")
 	os.Setenv(environment.WebhookMercadoLivrePaymentURL, "WEBHOOK")
 	os.Setenv(environment.QRCodeGatewayToken, "token")
 	os.Setenv(environment.Region, "Region")

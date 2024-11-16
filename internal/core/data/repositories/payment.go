@@ -8,6 +8,7 @@ import (
 	"github.com/thiagoluis88git/tech1-payment/internal/core/domain/repository"
 	"github.com/thiagoluis88git/tech1-payment/pkg/database"
 	"github.com/thiagoluis88git/tech1-payment/pkg/responses"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 const (
@@ -45,8 +46,10 @@ func (repository *PaymentRepository) CreatePaymentOrder(ctx context.Context, pay
 		return dto.PaymentResponse{}, responses.GetDatabaseError(err)
 	}
 
+	objID := result.InsertedID.(primitive.ObjectID)
+
 	return dto.PaymentResponse{
-		PaymentId: result.InsertedID.(string),
+		PaymentId: objID.String(),
 	}, nil
 }
 

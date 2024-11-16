@@ -2,7 +2,6 @@ package repositories_test
 
 import (
 	"context"
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -11,21 +10,9 @@ import (
 	"github.com/thiagoluis88git/tech1-payment/internal/integrations/model"
 	"github.com/thiagoluis88git/tech1-payment/internal/integrations/repositories"
 	"github.com/thiagoluis88git/tech1-payment/pkg/environment"
+	"github.com/thiagoluis88git/tech1-payment/pkg/mocks"
 	"github.com/thiagoluis88git/tech1-payment/pkg/responses"
 )
-
-func setup() {
-	os.Setenv(environment.QRCodeGatewayRootURL, "ROOT_URL")
-	os.Setenv(environment.DBHost, "HOST")
-	os.Setenv(environment.DBPort, "1234")
-	os.Setenv(environment.DBUser, "User")
-	os.Setenv(environment.DBPassword, "Pass")
-	os.Setenv(environment.DBName, "Name")
-	os.Setenv(environment.WebhookMercadoLivrePaymentURL, "WEBHOOK")
-	os.Setenv(environment.QRCodeGatewayToken, "TOKEN")
-	os.Setenv(environment.Region, "Region")
-	os.Setenv(environment.OrdersRootAPI, "OrdersRoot")
-}
 
 func mockOrder() dto.Order {
 	return dto.Order{
@@ -41,7 +28,7 @@ func mockOrder() dto.Order {
 
 func TestMercadoLivreRepository(t *testing.T) {
 	t.Parallel()
-	setup()
+	mocks.Setup()
 
 	t.Run("got success when generating QR code repository", func(t *testing.T) {
 		environment.LoadEnvironmentVariables()

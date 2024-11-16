@@ -52,7 +52,7 @@ func main() {
 		DocsPath:    "/docs",
 	}
 
-	db, err := database.ConfigMongo("uri", "databaseName")
+	db, err := database.ConfigMongo(environment.GetMongoHost(), environment.GetMongoDBName())
 
 	if err != nil {
 		panic(fmt.Sprintf("could not open database: %v", err.Error()))

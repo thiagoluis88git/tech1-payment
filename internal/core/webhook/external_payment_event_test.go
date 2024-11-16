@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 
 	"github.com/go-chi/chi"
@@ -14,21 +13,9 @@ import (
 	"github.com/thiagoluis88git/tech1-payment/internal/core/domain/dto"
 	"github.com/thiagoluis88git/tech1-payment/internal/core/webhook"
 	"github.com/thiagoluis88git/tech1-payment/pkg/environment"
+	"github.com/thiagoluis88git/tech1-payment/pkg/mocks"
 	"github.com/thiagoluis88git/tech1-payment/pkg/responses"
 )
-
-func setup() {
-	os.Setenv(environment.QRCodeGatewayRootURL, "ROOT_URL")
-	os.Setenv(environment.DBHost, "HOST")
-	os.Setenv(environment.DBPort, "1234")
-	os.Setenv(environment.DBUser, "User")
-	os.Setenv(environment.DBPassword, "Pass")
-	os.Setenv(environment.DBName, "Name")
-	os.Setenv(environment.WebhookMercadoLivrePaymentURL, "WEBHOOK")
-	os.Setenv(environment.QRCodeGatewayToken, "token")
-	os.Setenv(environment.Region, "Region")
-	os.Setenv(environment.OrdersRootAPI, "OrdersRoot")
-}
 
 func mockExternalPaymentEvent() dto.ExternalPaymentEvent {
 	return dto.ExternalPaymentEvent{
@@ -39,7 +26,7 @@ func mockExternalPaymentEvent() dto.ExternalPaymentEvent {
 
 func TestPostExternalPaymentHandler(t *testing.T) {
 	t.Parallel()
-	setup()
+	mocks.Setup()
 
 	t.Run("got success when calling post external payment comming from Mercado Livre Webhook handler", func(t *testing.T) {
 		t.Parallel()

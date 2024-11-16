@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"sync"
 	"testing"
 	"time"
@@ -16,21 +15,9 @@ import (
 	"github.com/thiagoluis88git/tech1-payment/internal/core/domain/dto"
 	"github.com/thiagoluis88git/tech1-payment/internal/core/handler"
 	"github.com/thiagoluis88git/tech1-payment/pkg/environment"
+	"github.com/thiagoluis88git/tech1-payment/pkg/mocks"
 	"github.com/thiagoluis88git/tech1-payment/pkg/responses"
 )
-
-func setup() {
-	os.Setenv(environment.QRCodeGatewayRootURL, "ROOT_URL")
-	os.Setenv(environment.DBHost, "HOST")
-	os.Setenv(environment.DBPort, "1234")
-	os.Setenv(environment.DBUser, "User")
-	os.Setenv(environment.DBPassword, "Pass")
-	os.Setenv(environment.DBName, "Name")
-	os.Setenv(environment.WebhookMercadoLivrePaymentURL, "WEBHOOK")
-	os.Setenv(environment.QRCodeGatewayToken, "token")
-	os.Setenv(environment.Region, "Region")
-	os.Setenv(environment.OrdersRootAPI, "rootURL")
-}
 
 func mockQRCodeOrder() dto.QRCodeOrder {
 	return dto.QRCodeOrder{
@@ -46,7 +33,7 @@ func mockQRCodeOrder() dto.QRCodeOrder {
 
 func TestGenerateQRCodeHandler(t *testing.T) {
 	t.Parallel()
-	setup()
+	mocks.Setup()
 
 	t.Run("got success when calling generate qrcode handler", func(t *testing.T) {
 		environment.LoadEnvironmentVariables()
