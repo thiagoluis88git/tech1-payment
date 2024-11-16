@@ -8,6 +8,7 @@ import (
 	"github.com/thiagoluis88git/tech1-payment/internal/core/domain/repository"
 	"github.com/thiagoluis88git/tech1-payment/pkg/database"
 	"github.com/thiagoluis88git/tech1-payment/pkg/responses"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -49,34 +50,54 @@ func (repository *PaymentRepository) CreatePaymentOrder(ctx context.Context, pay
 	objID := result.InsertedID.(primitive.ObjectID)
 
 	return dto.PaymentResponse{
-		PaymentId: objID.String(),
+		PaymentId: objID.Hex(),
 	}, nil
 }
 
 func (repository *PaymentRepository) FinishPaymentWithError(ctx context.Context, paymentId string) error {
-	paymentEntity := model.Payment{
-		PaymentStatus: model.PaymentErrorStatus,
+	update := bson.D{{
+		Key: "$set", Value: bson.D{{Key: "paymentStatus", Value: model.PaymentErrorStatus}},
+	}}
+
+	id, err := primitive.ObjectIDFromHex(paymentId)
+
+	if err != nil {
+		return err
 	}
 
-	_, err := repository.db.Conn.Collection(paymentCollectionName).UpdateByID(ctx, paymentId, paymentEntity)
+	result, err := repository.db.Conn.
+		Collection(paymentCollectionName).
+		UpdateByID(ctx, id, update)
 
 	if err != nil {
 		return responses.GetDatabaseError(err)
 	}
+
+	print(result)
 
 	return nil
 }
 
 func (repository *PaymentRepository) FinishPaymentWithSuccess(ctx context.Context, paymentId string) error {
-	paymentEntity := model.Payment{
-		PaymentStatus: model.PaymentPayedStatus,
+	update := bson.D{{
+		Key: "$set", Value: bson.D{{Key: "paymentStatus", Value: model.PaymentPayedStatus}},
+	}}
+
+	id, err := primitive.ObjectIDFromHex(paymentId)
+
+	if err != nil {
+		return err
 	}
 
-	_, err := repository.db.Conn.Collection(paymentCollectionName).UpdateByID(ctx, paymentId, paymentEntity)
+	result, err := repository.db.Conn.
+		Collection(paymentCollectionName).
+		UpdateByID(ctx, id, update)
 
 	if err != nil {
 		return responses.GetDatabaseError(err)
 	}
+
+	print(result)
 
 	return nil
 }
