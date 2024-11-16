@@ -49,7 +49,7 @@ func TestPaymentHandler(t *testing.T) {
 			TotalPrice:  123.32,
 			PaymentType: "CREDIT",
 		}).Return(dto.PaymentResponse{
-			PaymentId:        uint(12),
+			PaymentId:        "paymentId",
 			PaymentGatewayId: "gatewayID",
 			PaymentDate:      time.Date(2024, time.March, 12, 20, 20, 0, 0, time.Local),
 		}, nil)
@@ -65,7 +65,7 @@ func TestPaymentHandler(t *testing.T) {
 
 		assert.NoError(t, err)
 
-		assert.Equal(t, uint(12), paymentResponse.PaymentId)
+		assert.Equal(t, "paymentId", paymentResponse.PaymentId)
 		assert.Equal(t, "gatewayID", paymentResponse.PaymentGatewayId)
 	})
 

@@ -20,7 +20,7 @@ func newQRCodeOrder() dto.QRCodeOrder {
 func mockQRCodeOrder() dto.Order {
 	return dto.Order{
 		TotalPrice: 124.53,
-		PaymentID:  uint(7),
+		PaymentID:  "12345",
 	}
 }
 
@@ -60,7 +60,7 @@ func TestQRCodePaymentUseCase(t *testing.T) {
 		date := mockDate()
 
 		mockPaymentRepo.On("CreatePaymentOrder", ctx, mockPayment()).Return(dto.PaymentResponse{
-			PaymentId:        uint(7),
+			PaymentId:        "12345",
 			PaymentGatewayId: "123456",
 		}, nil)
 		mockOrderRepo.On("CreatePayingOrder", ctx, mockQRCodeOrder()).Return(dto.OrderResponse{
@@ -95,7 +95,7 @@ func TestQRCodePaymentUseCase(t *testing.T) {
 		date := mockDate()
 
 		mockPaymentRepo.On("CreatePaymentOrder", ctx, mockPayment()).Return(dto.PaymentResponse{
-			PaymentId:        uint(7),
+			PaymentId:        "12345",
 			PaymentGatewayId: "123456",
 		}, nil)
 		mockOrderRepo.On("CreatePayingOrder", ctx, mockQRCodeOrder()).Return(dto.OrderResponse{
@@ -131,7 +131,7 @@ func TestQRCodePaymentUseCase(t *testing.T) {
 		date := mockDate()
 
 		mockPaymentRepo.On("CreatePaymentOrder", ctx, mockPayment()).Return(dto.PaymentResponse{
-			PaymentId:        uint(7),
+			PaymentId:        "12345",
 			PaymentGatewayId: "123456",
 		}, nil)
 		mockOrderRepo.On("CreatePayingOrder", ctx, mockQRCodeOrder()).Return(dto.OrderResponse{
@@ -169,7 +169,7 @@ func TestQRCodePaymentUseCase(t *testing.T) {
 		date := mockDate()
 
 		mockPaymentRepo.On("CreatePaymentOrder", ctx, mockPayment()).Return(dto.PaymentResponse{
-			PaymentId:        uint(7),
+			PaymentId:        "12345",
 			PaymentGatewayId: "123456",
 		}, nil)
 		mockOrderRepo.On("CreatePayingOrder", ctx, mockQRCodeOrder()).Return(dto.OrderResponse{}, &responses.LocalError{
@@ -231,8 +231,8 @@ func TestQRCodePaymentUseCase(t *testing.T) {
 			ExternalReference: "123|789",
 		}, nil)
 
-		mockPaymentRepo.On("FinishPaymentWithSuccess", ctx, uint(789)).Return(nil)
-		mockOrderRepo.On("FinishOrderWithPayment", ctx, uint(123), uint(789)).Return(nil)
+		mockPaymentRepo.On("FinishPaymentWithSuccess", ctx, "789").Return(nil)
+		mockOrderRepo.On("FinishOrderWithPayment", ctx, uint(123), "789").Return(nil)
 		err := sut.Execute(ctx, "token", newExternalPaymentEvent())
 
 		mockOrderRepo.AssertExpectations(t)

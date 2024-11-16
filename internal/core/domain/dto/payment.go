@@ -9,7 +9,7 @@ type Payment struct {
 }
 
 type PaymentResponse struct {
-	PaymentId        uint      `json:"paymentId"`
+	PaymentId        string    `json:"paymentId"`
 	PaymentGatewayId string    `json:"paymentGatewayId"`
 	PaymentDate      time.Time `json:"paymentDate"`
 }

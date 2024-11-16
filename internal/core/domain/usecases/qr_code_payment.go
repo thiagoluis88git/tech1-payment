@@ -139,10 +139,10 @@ func (service *FinishOrderForQRCodeUseCaseImpl) Execute(ctx context.Context, tok
 		ids := strings.Split(mercadoLivrePayment.ExternalReference, "|")
 
 		orderID, _ := strconv.Atoi(ids[0])
-		paymentID, _ := strconv.Atoi(ids[1])
+		paymentID := ids[1]
 
-		service.paymentRepository.FinishPaymentWithSuccess(ctx, uint(paymentID))
-		service.orderRepository.FinishOrderWithPayment(ctx, uint(orderID), uint(paymentID))
+		service.paymentRepository.FinishPaymentWithSuccess(ctx, paymentID)
+		service.orderRepository.FinishOrderWithPayment(ctx, uint(orderID), paymentID)
 	}
 
 	return nil

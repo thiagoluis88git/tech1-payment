@@ -10,6 +10,10 @@ import (
 	"github.com/thiagoluis88git/tech1-payment/pkg/responses"
 )
 
+const (
+	paymentCollectionName = "payments"
+)
+
 type PaymentRepository struct {
 	db *database.Database
 }
@@ -28,17 +32,6 @@ func (repository *PaymentRepository) GetPaymentTypes() []string {
 }
 
 func (repository *PaymentRepository) CreatePaymentOrder(ctx context.Context, payment dto.Payment) (dto.PaymentResponse, error) {
-	tx := repository.db.Connection.WithContext(ctx).Begin()
-	defer func() {
-		if r := recover(); r != nil {
-			tx.Rollback()
-		}
-	}()
-
-	if err := tx.Error; err != nil {
-		return dto.PaymentResponse{}, responses.GetDatabaseError(err)
-	}
-
 	paymentEntity := model.Payment{
 		CustomerCPF:   payment.CustomerCPF,
 		TotalPrice:    payment.TotalPrice,
@@ -46,31 +39,23 @@ func (repository *PaymentRepository) CreatePaymentOrder(ctx context.Context, pay
 		PaymentStatus: model.PaymentPayingStatus,
 	}
 
-	err := tx.Create(&paymentEntity).Error
+	result, err := repository.db.Conn.Collection(paymentCollectionName).InsertOne(ctx, paymentEntity)
 
 	if err != nil {
-		tx.Rollback()
-		return dto.PaymentResponse{}, responses.GetDatabaseError(err)
-	}
-
-	err = tx.Commit().Error
-
-	if err != nil {
-		tx.Rollback()
 		return dto.PaymentResponse{}, responses.GetDatabaseError(err)
 	}
 
 	return dto.PaymentResponse{
-		PaymentId: paymentEntity.ID,
+		PaymentId: result.InsertedID.(string),
 	}, nil
 }
 
-func (repository *PaymentRepository) FinishPaymentWithError(ctx context.Context, paymentId uint) error {
-	err := repository.db.Connection.WithContext(ctx).
-		Model(&model.Payment{}).
-		Where("id = ?", paymentId).
-		Update("payment_status", model.PaymentErrorStatus).
-		Error
+func (repository *PaymentRepository) FinishPaymentWithError(ctx context.Context, paymentId string) error {
+	paymentEntity := model.Payment{
+		PaymentStatus: model.PaymentErrorStatus,
+	}
+
+	_, err := repository.db.Conn.Collection(paymentCollectionName).UpdateByID(ctx, paymentId, paymentEntity)
 
 	if err != nil {
 		return responses.GetDatabaseError(err)
@@ -79,12 +64,12 @@ func (repository *PaymentRepository) FinishPaymentWithError(ctx context.Context,
 	return nil
 }
 
-func (repository *PaymentRepository) FinishPaymentWithSuccess(ctx context.Context, paymentId uint) error {
-	err := repository.db.Connection.WithContext(ctx).
-		Model(&model.Payment{}).
-		Where("id = ?", paymentId).
-		Update("payment_status", model.PaymentPayedStatus).
-		Error
+func (repository *PaymentRepository) FinishPaymentWithSuccess(ctx context.Context, paymentId string) error {
+	paymentEntity := model.Payment{
+		PaymentStatus: model.PaymentPayedStatus,
+	}
+
+	_, err := repository.db.Conn.Collection(paymentCollectionName).UpdateByID(ctx, paymentId, paymentEntity)
 
 	if err != nil {
 		return responses.GetDatabaseError(err)

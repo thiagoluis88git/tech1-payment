@@ -1,29 +1,24 @@
 package database
 
 import (
-	"github.com/thiagoluis88git/tech1-payment/internal/core/data/model"
+	"context"
 
-	"gorm.io/gorm"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type Database struct {
-	Connection *gorm.DB
+	Conn *mongo.Database
 }
 
-func ConfigDatabase(dialector gorm.Dialector) (*Database, error) {
-	db, err := gorm.Open(dialector, &gorm.Config{})
+func ConfigMongo(uri string, databaseName string) (*Database, error) {
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(uri))
 
 	if err != nil {
-		return &Database{}, err
+		return nil, err
 	}
 
-	db.AutoMigrate(
-		&model.Order{},
-		&model.OrderProduct{},
-		&model.Payment{},
-	)
-
 	return &Database{
-		Connection: db,
+		Conn: client.Database("databaseName"),
 	}, nil
 }

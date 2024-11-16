@@ -55,6 +55,6 @@ func (o OrderRepositoryImpl) DeleteOrder(ctx context.Context, orderID uint) erro
 }
 
 // FinishOrderWithPayment implements repository.OrderRepository.
-func (o OrderRepositoryImpl) FinishOrderWithPayment(ctx context.Context, orderID uint, paymentID uint) error {
+func (o OrderRepositoryImpl) FinishOrderWithPayment(ctx context.Context, orderID uint, paymentID string) error {
 	panic("unimplemented")
 }

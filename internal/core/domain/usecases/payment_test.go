@@ -40,7 +40,7 @@ func TestPaymentServices(t *testing.T) {
 
 		mockPaymentRepo.On("CreatePaymentOrder", ctx, paymentCreation).Return(paymentResponse, nil)
 		mockPaymentGatewayRepo.On("Pay", paymentResponse, paymentCreation).Return(paymentGatewayResponse, nil)
-		mockPaymentRepo.On("FinishPaymentWithSuccess", ctx, uint(1)).Return(nil)
+		mockPaymentRepo.On("FinishPaymentWithSuccess", ctx, "12345").Return(nil)
 
 		response, err := sut.Execute(ctx, paymentCreation)
 
@@ -91,7 +91,7 @@ func TestPaymentServices(t *testing.T) {
 			Code:    503,
 			Message: "Service Unavailable",
 		})
-		mockPaymentRepo.On("FinishPaymentWithError", ctx, uint(1)).Return(nil)
+		mockPaymentRepo.On("FinishPaymentWithError", ctx, "12345").Return(nil)
 
 		response, err := sut.Execute(ctx, paymentCreation)
 
@@ -117,7 +117,7 @@ func TestPaymentServices(t *testing.T) {
 
 		mockPaymentRepo.On("CreatePaymentOrder", ctx, paymentCreation).Return(paymentResponse, nil)
 		mockPaymentGatewayRepo.On("Pay", paymentResponse, paymentCreation).Return(paymentGatewayResponse, nil)
-		mockPaymentRepo.On("FinishPaymentWithSuccess", ctx, uint(1)).Return(&responses.LocalError{
+		mockPaymentRepo.On("FinishPaymentWithSuccess", ctx, "12345").Return(&responses.LocalError{
 			Code:    3,
 			Message: "DATABASE_CONFLICT_ERROR",
 		})

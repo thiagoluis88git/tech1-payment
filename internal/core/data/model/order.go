@@ -19,7 +19,7 @@ type Order struct {
 	OrderStatus  string
 	TotalPrice   float64        `json:"totalPrice" validate:"required"`
 	CustomerCPF  *string        `json:"customerCPF"`
-	PaymentID    uint           `json:"paymentId" validate:"required"`
+	PaymentID    string         `json:"paymentId" validate:"required"`
 	OrderProduct []OrderProduct `json:"orderProducts" validate:"required"`
 	TicketNumber int
 }

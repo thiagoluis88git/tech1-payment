@@ -16,7 +16,6 @@ import (
 	"github.com/thiagoluis88git/tech1-payment/pkg/environment"
 	"github.com/thiagoluis88git/tech1-payment/pkg/httpserver"
 	"github.com/thiagoluis88git/tech1-payment/pkg/responses"
-	"gorm.io/driver/postgres"
 
 	"github.com/mvrilo/go-redoc"
 
@@ -53,15 +52,7 @@ func main() {
 		DocsPath:    "/docs",
 	}
 
-	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v",
-		environment.GetDBHost(),
-		environment.GetDBUser(),
-		environment.GetDBPassword(),
-		environment.GetDBName(),
-		environment.GetDBPort(),
-	)
-
-	db, err := database.ConfigDatabase(postgres.Open(dsn))
+	db, err := database.ConfigMongo("uri", "databaseName")
 
 	if err != nil {
 		panic(fmt.Sprintf("could not open database: %v", err.Error()))

@@ -15,7 +15,7 @@ var (
 	}
 
 	paymentResponse = dto.PaymentResponse{
-		PaymentId:        1,
+		PaymentId:        "12345",
 		PaymentGatewayId: "123",
 		PaymentDate:      time.Date(2024, 10, 10, 0, 0, 0, 0, time.Local),
 	}
@@ -76,7 +76,7 @@ func (mock *MockOrderRepository) DeleteOrder(ctx context.Context, orderID uint) 
 	return nil
 }
 
-func (mock *MockOrderRepository) FinishOrderWithPayment(ctx context.Context, orderID uint, paymentID uint) error {
+func (mock *MockOrderRepository) FinishOrderWithPayment(ctx context.Context, orderID uint, paymentID string) error {
 	args := mock.Called(ctx, orderID, paymentID)
 	err := args.Error(0)
 
@@ -98,66 +98,6 @@ func (mock *MockOrderRepository) GetOrderById(ctx context.Context, orderId uint)
 	return args.Get(0).(dto.OrderResponse), nil
 }
 
-func (mock *MockOrderRepository) GetOrdersToPrepare(ctx context.Context) ([]dto.OrderResponse, error) {
-	args := mock.Called(ctx)
-	err := args.Error(1)
-
-	if err != nil {
-		return []dto.OrderResponse{}, err
-	}
-
-	return args.Get(0).([]dto.OrderResponse), nil
-}
-
-func (mock *MockOrderRepository) GetOrdersToFollow(ctx context.Context) ([]dto.OrderResponse, error) {
-	args := mock.Called(ctx)
-	err := args.Error(1)
-
-	if err != nil {
-		return []dto.OrderResponse{}, err
-	}
-
-	return args.Get(0).([]dto.OrderResponse), nil
-}
-
-func (mock *MockOrderRepository) GetOrdersWaitingPayment(ctx context.Context) ([]dto.OrderResponse, error) {
-	args := mock.Called(ctx)
-	err := args.Error(1)
-
-	if err != nil {
-		return []dto.OrderResponse{}, err
-	}
-
-	return args.Get(0).([]dto.OrderResponse), nil
-}
-
-func (mock *MockOrderRepository) UpdateToPreparing(ctx context.Context, orderId uint) error {
-	args := mock.Called(ctx, orderId)
-	err := args.Error(0)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (mock *MockOrderRepository) UpdateToDone(ctx context.Context, orderId uint) error {
-	args := mock.Called(ctx, orderId)
-	err := args.Error(0)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (mock *MockOrderRepository) GetNextTicketNumber(ctx context.Context, date int64) int {
-	args := mock.Called(ctx, date)
-	return args.Get(0).(int)
-}
-
 func (mock *MockPaymentRepository) GetPaymentTypes() []string {
 	args := mock.Called()
 	return args.Get(0).([]string)
@@ -174,7 +114,7 @@ func (mock *MockPaymentRepository) CreatePaymentOrder(ctx context.Context, payme
 	return args.Get(0).(dto.PaymentResponse), nil
 }
 
-func (mock *MockPaymentRepository) FinishPaymentWithSuccess(ctx context.Context, paymentId uint) error {
+func (mock *MockPaymentRepository) FinishPaymentWithSuccess(ctx context.Context, paymentId string) error {
 	args := mock.Called(ctx, paymentId)
 	err := args.Error(0)
 
@@ -185,7 +125,7 @@ func (mock *MockPaymentRepository) FinishPaymentWithSuccess(ctx context.Context,
 	return nil
 }
 
-func (mock *MockPaymentRepository) FinishPaymentWithError(ctx context.Context, paymentId uint) error {
+func (mock *MockPaymentRepository) FinishPaymentWithError(ctx context.Context, paymentId string) error {
 	args := mock.Called(ctx, paymentId)
 	err := args.Error(0)
 

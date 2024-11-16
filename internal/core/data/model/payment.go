@@ -1,7 +1,5 @@
 package model
 
-import "gorm.io/gorm"
-
 const (
 	PaymentPayingStatus = "Pagando"
 	PaymentPayedStatus  = "Pago"
@@ -12,9 +10,8 @@ const (
 )
 
 type Payment struct {
-	gorm.Model
-	CustomerCPF   *string
-	TotalPrice    float64
-	PaymentStatus string
-	PaymentType   string
+	CustomerCPF   *string `bson:"customerCPF"`
+	TotalPrice    float64 `bson:"totalPrice"`
+	PaymentStatus string  `bson:"paymentStatus"`
+	PaymentType   string  `bson:"paymentType"`
 }

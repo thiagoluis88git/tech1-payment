@@ -9,5 +9,5 @@ import (
 type OrderRepository interface {
 	CreatePayingOrder(ctx context.Context, order dto.Order) (dto.OrderResponse, error)
 	DeleteOrder(ctx context.Context, orderID uint) error
-	FinishOrderWithPayment(ctx context.Context, orderID uint, paymentID uint) error
+	FinishOrderWithPayment(ctx context.Context, orderID uint, paymentID string) error
 }
