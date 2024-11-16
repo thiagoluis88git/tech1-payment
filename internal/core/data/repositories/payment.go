@@ -65,15 +65,13 @@ func (repository *PaymentRepository) FinishPaymentWithError(ctx context.Context,
 		return err
 	}
 
-	result, err := repository.db.Conn.
+	_, err = repository.db.Conn.
 		Collection(paymentCollectionName).
 		UpdateByID(ctx, id, update)
 
 	if err != nil {
 		return responses.GetDatabaseError(err)
 	}
-
-	print(result)
 
 	return nil
 }
@@ -89,15 +87,13 @@ func (repository *PaymentRepository) FinishPaymentWithSuccess(ctx context.Contex
 		return err
 	}
 
-	result, err := repository.db.Conn.
+	_, err = repository.db.Conn.
 		Collection(paymentCollectionName).
 		UpdateByID(ctx, id, update)
 
 	if err != nil {
 		return responses.GetDatabaseError(err)
 	}
-
-	print(result)
 
 	return nil
 }
