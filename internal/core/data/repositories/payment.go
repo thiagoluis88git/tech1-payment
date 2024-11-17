@@ -41,7 +41,9 @@ func (repository *PaymentRepository) CreatePaymentOrder(ctx context.Context, pay
 		PaymentStatus: model.PaymentPayingStatus,
 	}
 
-	result, err := repository.db.Conn.Collection(paymentCollectionName).InsertOne(ctx, paymentEntity)
+	result, err := repository.db.Conn.
+		Collection(paymentCollectionName).
+		InsertOne(ctx, paymentEntity)
 
 	if err != nil {
 		return dto.PaymentResponse{}, responses.GetDatabaseError(err)
@@ -55,33 +57,19 @@ func (repository *PaymentRepository) CreatePaymentOrder(ctx context.Context, pay
 }
 
 func (repository *PaymentRepository) FinishPaymentWithError(ctx context.Context, paymentId string) error {
-	update := bson.D{{
-		Key: "$set", Value: bson.D{{Key: "paymentStatus", Value: model.PaymentErrorStatus}},
-	}}
-
-	id, err := primitive.ObjectIDFromHex(paymentId)
-
-	if err != nil {
-		return err
-	}
-
-	_, err = repository.db.Conn.
-		Collection(paymentCollectionName).
-		UpdateByID(ctx, id, update)
-
-	if err != nil {
-		return responses.GetDatabaseError(err)
-	}
-
-	return nil
+	return repository.updateWithStatus(ctx, paymentId, model.PaymentErrorStatus)
 }
 
 func (repository *PaymentRepository) FinishPaymentWithSuccess(ctx context.Context, paymentId string) error {
+	return repository.updateWithStatus(ctx, paymentId, model.PaymentPayedStatus)
+}
+
+func (repository *PaymentRepository) updateWithStatus(ctx context.Context, paymentID string, status string) error {
 	update := bson.D{{
-		Key: "$set", Value: bson.D{{Key: "paymentStatus", Value: model.PaymentPayedStatus}},
+		Key: "$set", Value: bson.D{{Key: "paymentStatus", Value: status}},
 	}}
 
-	id, err := primitive.ObjectIDFromHex(paymentId)
+	id, err := primitive.ObjectIDFromHex(paymentID)
 
 	if err != nil {
 		return err

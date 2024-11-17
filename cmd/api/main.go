@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -16,6 +17,8 @@ import (
 	"github.com/thiagoluis88git/tech1-payment/pkg/environment"
 	"github.com/thiagoluis88git/tech1-payment/pkg/httpserver"
 	"github.com/thiagoluis88git/tech1-payment/pkg/responses"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"github.com/mvrilo/go-redoc"
 
@@ -52,7 +55,13 @@ func main() {
 		DocsPath:    "/docs",
 	}
 
-	db, err := database.ConfigMongo(environment.GetMongoHost(), environment.GetMongoDBName())
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(environment.GetMongoHost()))
+
+	if err != nil {
+		panic(fmt.Sprintf("could not open database client: %v", err.Error()))
+	}
+
+	db, err := database.ConfigMongo(client, environment.GetMongoDBName())
 
 	if err != nil {
 		panic(fmt.Sprintf("could not open database: %v", err.Error()))
