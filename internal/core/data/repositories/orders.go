@@ -19,7 +19,6 @@ func NewOrderRepository(ds remote.OrderRemoteDataSource) repository.OrderReposit
 	}
 }
 
-// CreatePayingOrder implements repository.OrderRepository.
 func (repo OrderRepositoryImpl) CreatePayingOrder(ctx context.Context, order dto.Order) (dto.OrderResponse, error) {
 	products := make([]model.OrderProduct, 0)
 
@@ -49,12 +48,22 @@ func (repo OrderRepositoryImpl) CreatePayingOrder(ctx context.Context, order dto
 	}, nil
 }
 
-// DeleteOrder implements repository.OrderRepository.
-func (o OrderRepositoryImpl) DeleteOrder(ctx context.Context, orderID uint) error {
-	panic("unimplemented")
+func (repo OrderRepositoryImpl) DeleteOrder(ctx context.Context, orderID uint) error {
+	err := repo.ds.DeleteOrder(ctx, orderID)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
-// FinishOrderWithPayment implements repository.OrderRepository.
-func (o OrderRepositoryImpl) FinishOrderWithPayment(ctx context.Context, orderID uint, paymentID string) error {
-	panic("unimplemented")
+func (repo OrderRepositoryImpl) FinishOrderWithPayment(ctx context.Context, orderID uint, paymentID string) error {
+	err := repo.ds.FinishOrderWithPayment(ctx, orderID, paymentID)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

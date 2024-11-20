@@ -17,7 +17,7 @@ func TestFeatures(t *testing.T) {
 		ScenarioInitializer: InitializeScenario,
 		Options: &godog.Options{
 			Format:   "pretty",
-			Paths:    []string{"features"},
+			Paths:    []string{"feature"},
 			TestingT: t, // Testing instance that will run subtests.
 		},
 	}
