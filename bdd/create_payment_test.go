@@ -1,15 +1,19 @@
-package bdd
+package bdd_test
 
 import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"net/http"
+	"errors"
+	"fmt"
 	"net/http/httptest"
+	"reflect"
 	"testing"
 
 	"github.com/cucumber/godog"
+	"github.com/go-chi/chi"
 	"github.com/thiagoluis88git/tech1-payment/internal/core/domain/dto"
+	"github.com/thiagoluis88git/tech1-payment/internal/core/handler"
 )
 
 func TestFeatures(t *testing.T) {
@@ -27,11 +31,22 @@ func TestFeatures(t *testing.T) {
 	}
 }
 
+func InitializeScenario(ctx *godog.ScenarioContext) {
+	api := &apiFeature{}
+
+	ctx.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
+		api.resetResponse(sc)
+		return ctx, nil
+	})
+
+	ctx.Step(`^I send "([^"]*)" request to "([^"]*)" with payload:$`, api.iSendRequestToWithPayload)
+	ctx.Step(`^the response code should be (\d+)$`, api.theResponseCodeShouldBe)
+	ctx.Step(`^the response payload should match json:$`, api.theResponsePayloadShouldMatchJson)
+}
+
 type paymentCtxKey struct{}
 
-type apiFeature struct {
-	client *http.Client
-}
+type apiFeature struct{}
 
 type response struct {
 	status int
@@ -58,36 +73,75 @@ func (a *apiFeature) iSendRequestToWithPayload(ctx context.Context, method, rout
 	req := httptest.NewRequest(method, route, bytes.NewReader(reqBody))
 	req.Header.Set("Content-Type", "application/json")
 
-	// resp, _ := a.app.Test(req)
+	rctx := chi.NewRouteContext()
 
-	// var createdBooks []models.Book
-	// json.NewDecoder(resp.Body).Decode(&createdBooks)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+	recorder := httptest.NewRecorder()
+
+	payUseCase := new(MockPayOrderUseCase)
+
+	payUseCase.On("Execute", req.Context(), dto.Payment{
+		TotalPrice:  123.32,
+		PaymentType: "CREDIT",
+	}).Return(dto.PaymentResponse{
+		PaymentId:        "rwer342534sdf",
+		PaymentGatewayId: "234trr00",
+	}, nil)
+
+	createPaymentHandler := handler.CreatePaymentHandler(payUseCase)
+
+	createPaymentHandler.ServeHTTP(recorder, req)
+
+	var paymentResponse dto.PaymentResponse
+	err := json.Unmarshal(recorder.Body.Bytes(), &paymentResponse)
+
+	if err != nil {
+		return nil, err
+	}
 
 	actual := response{
-		// status: resp.StatusCode,
-		// body:   createdBooks,
+		status: recorder.Code,
+		body:   paymentResponse,
 	}
 
 	return context.WithValue(ctx, paymentCtxKey{}, actual), nil
 }
 
 func (a *apiFeature) theResponseCodeShouldBe(ctx context.Context, expectedStatus int) error {
+	resp, ok := ctx.Value(paymentCtxKey{}).(response)
+
+	if !ok {
+		return errors.New("there are no payment")
+	}
+
+	if expectedStatus != resp.status {
+		if resp.status >= 400 {
+			return fmt.Errorf("expected response code to be: %d, but actual is: %d, response message: %s", expectedStatus, resp.status, resp.body)
+		}
+		return fmt.Errorf("expected response code to be: %d, but actual is: %d", expectedStatus, resp.status)
+	}
+
 	return nil
 }
 
 func (a *apiFeature) theResponsePayloadShouldMatchJson(ctx context.Context, expectedBody *godog.DocString) error {
+	actualResp, ok := ctx.Value(paymentCtxKey{}).(response)
+	if !ok {
+		return errors.New("there are no payment")
+	}
+
+	var response dto.PaymentResponse
+
+	err := json.Unmarshal([]byte(expectedBody.Content), &response)
+
+	if err != nil {
+		return err
+	}
+
+	if !reflect.DeepEqual(actualResp.body, response) {
+		return fmt.Errorf("expected JSON does not match actual, %v vs. %v", expectedBody, actualResp.body)
+	}
+
 	return nil
-}
-
-func InitializeScenario(ctx *godog.ScenarioContext) {
-	api := &apiFeature{}
-
-	ctx.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
-		api.resetResponse(sc)
-		return ctx, nil
-	})
-
-	ctx.Step(`^I send "([^"]*)" request to "([^"]*)" with payload:$`, api.iSendRequestToWithPayload)
-	ctx.Step(`^the response code should be (\d+)$`, api.theResponseCodeShouldBe)
-	ctx.Step(`^the response payload should match json:$`, api.theResponsePayloadShouldMatchJson)
 }

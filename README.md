@@ -9,6 +9,7 @@
   - [Clean Archtecture](#clean-archtecture)
 - [Design Patterns](#design-patterns)
 - [Unit Testing](#unit-testing)
+  - [BDD](#bdd)
 - [Docker build and run](#docker-build-and-run)
 - [How to use](#how-to-use)
   - [Check app status](#check-app-status)
@@ -100,6 +101,15 @@ go test ./...
 ```
 
 This will run all the **Services** unit tests and **Repository** unit Database tests running [Testcontainers](https://testcontainers.com/) database container mocks.
+
+### BDD
+
+Inside `bdd` folder, has an implementation of a BDD test. This test is made by a `Cucumber` API [Link](https://github.com/cucumber/godog).
+The **BDD** tests will be triggered when running the `go test ./...` in the previous step
+
+```
+go test ./...
+```
 
 ## Docker build and run
 
