@@ -12,7 +12,7 @@ import (
 type OrderRemoteDataSource interface {
 	CreatePayingOrder(ctx context.Context, order model.Order) (model.OrderResponse, error)
 	DeleteOrder(ctx context.Context, orderID uint) error
-	FinishOrderWithPayment(ctx context.Context, orderID uint, paymentID uint) error
+	FinishOrderWithPayment(ctx context.Context, orderID uint, paymentID string) error
 }
 
 type OrderRemoteDataSourceImpl struct {
@@ -71,8 +71,8 @@ func (ds *OrderRemoteDataSourceImpl) DeleteOrder(ctx context.Context, orderID ui
 	return nil
 }
 
-func (ds *OrderRemoteDataSourceImpl) FinishOrderWithPayment(ctx context.Context, orderID uint, paymentID uint) error {
-	endpoint := fmt.Sprintf("%v/%v/%v/%d/%d", ds.rootURL, "orders", "finish", orderID, paymentID)
+func (ds *OrderRemoteDataSourceImpl) FinishOrderWithPayment(ctx context.Context, orderID uint, paymentID string) error {
+	endpoint := fmt.Sprintf("%v/%v/%v/%d/%v", ds.rootURL, "orders", "finish", orderID, paymentID)
 
 	_, err := httpserver.DoNoBodyRequest(
 		ctx,
