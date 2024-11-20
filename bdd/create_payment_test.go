@@ -31,6 +31,19 @@ func TestFeatures(t *testing.T) {
 	}
 }
 
+func InitializeScenario(ctx *godog.ScenarioContext) {
+	api := &apiFeature{}
+
+	ctx.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
+		api.resetResponse(sc)
+		return ctx, nil
+	})
+
+	ctx.Step(`^I send "([^"]*)" request to "([^"]*)" with payload:$`, api.iSendRequestToWithPayload)
+	ctx.Step(`^the response code should be (\d+)$`, api.theResponseCodeShouldBe)
+	ctx.Step(`^the response payload should match json:$`, api.theResponsePayloadShouldMatchJson)
+}
+
 type paymentCtxKey struct{}
 
 type apiFeature struct{}
@@ -131,17 +144,4 @@ func (a *apiFeature) theResponsePayloadShouldMatchJson(ctx context.Context, expe
 	}
 
 	return nil
-}
-
-func InitializeScenario(ctx *godog.ScenarioContext) {
-	api := &apiFeature{}
-
-	ctx.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
-		api.resetResponse(sc)
-		return ctx, nil
-	})
-
-	ctx.Step(`^I send "([^"]*)" request to "([^"]*)" with payload:$`, api.iSendRequestToWithPayload)
-	ctx.Step(`^the response code should be (\d+)$`, api.theResponseCodeShouldBe)
-	ctx.Step(`^the response payload should match json:$`, api.theResponsePayloadShouldMatchJson)
 }
