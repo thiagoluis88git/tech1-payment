@@ -29,8 +29,6 @@ func TestPostExternalPaymentHandler(t *testing.T) {
 	mocks.Setup()
 
 	t.Run("got success when calling post external payment comming from Mercado Livre Webhook handler", func(t *testing.T) {
-		t.Parallel()
-
 		environment.LoadEnvironmentVariables()
 
 		jsonData, err := json.Marshal(mockExternalPaymentEvent())
@@ -61,8 +59,6 @@ func TestPostExternalPaymentHandler(t *testing.T) {
 	})
 
 	t.Run("got error on FinishOrder UseCase when calling post external payment comming from Mercado Livre Webhook handler", func(t *testing.T) {
-		t.Parallel()
-
 		environment.LoadEnvironmentVariables()
 
 		jsonData, err := json.Marshal(mockExternalPaymentEvent())
@@ -95,8 +91,6 @@ func TestPostExternalPaymentHandler(t *testing.T) {
 	})
 
 	t.Run("got error on invalid json when calling post external payment comming from Mercado Livre Webhook handler", func(t *testing.T) {
-		t.Parallel()
-
 		environment.LoadEnvironmentVariables()
 
 		body := bytes.NewBuffer([]byte("asdff{{}"))

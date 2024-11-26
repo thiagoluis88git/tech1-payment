@@ -10,8 +10,8 @@ build:
 	go build -o bin/service-sonar cmd/api/main.go
 
 test: build
-	go test -short -coverprofile=bin/cov.out `go list ./... | grep -v vendor/`
-	go tool cover -func=bin/cov.out
+	go test -cover ./... -coverprofile="bin/cov.out"
+	go tool cover -func="bin/cov.out"
 
 clean:
 	rm -rf ./bin
