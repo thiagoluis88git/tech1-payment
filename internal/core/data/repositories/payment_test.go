@@ -14,23 +14,23 @@ import (
 func TestPaymentRepository(t *testing.T) {
 	mt := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
 
-	mt.Run("got success when creating payment order respository", func(mt *mtest.T) { // test code
+	mt.Run("got success when creating payment order respository", func(mt *mtest.T) {
 		database, err := database.ConfigMongo(mt.Client, mt.Name())
 
-		assert.NoError(t, err)
+		assert.NoError(mt, err)
 
 		repo := repositories.NewPaymentRepository(database)
 		mt.AddMockResponses(mtest.CreateSuccessResponse())
 
 		response, err := repo.CreatePaymentOrder(context.TODO(), dto.Payment{})
-		assert.NoError(t, err)
-		assert.NotEmpty(t, response)
+		assert.NoError(mt, err)
+		assert.NotEmpty(mt, response)
 	})
 
-	mt.Run("got error when creating payment order respository", func(mt *mtest.T) { // test code
+	mt.Run("got error when creating payment order respository", func(mt *mtest.T) {
 		database, err := database.ConfigMongo(mt.Client, mt.Name())
 
-		assert.NoError(t, err)
+		assert.NoError(mt, err)
 
 		repo := repositories.NewPaymentRepository(database)
 		mt.AddMockResponses(mtest.CreateWriteErrorsResponse(mtest.WriteError{
@@ -40,38 +40,38 @@ func TestPaymentRepository(t *testing.T) {
 		}))
 
 		response, err := repo.CreatePaymentOrder(context.TODO(), dto.Payment{})
-		assert.Error(t, err)
-		assert.Empty(t, response)
+		assert.Error(mt, err)
+		assert.Empty(mt, response)
 	})
 
-	mt.Run("got success when updating payment order with PAYED respository", func(mt *mtest.T) { // test code
+	mt.Run("got success when updating payment order with PAYED respository", func(mt *mtest.T) {
 		database, err := database.ConfigMongo(mt.Client, mt.Name())
 
-		assert.NoError(t, err)
+		assert.NoError(mt, err)
 
 		repo := repositories.NewPaymentRepository(database)
 		mt.AddMockResponses(mtest.CreateSuccessResponse())
 
 		err = repo.FinishPaymentWithSuccess(context.TODO(), "6738ccbbf05e936dcc11a986")
-		assert.NoError(t, err)
+		assert.NoError(mt, err)
 	})
 
-	mt.Run("got error on invalid object id hex when updating payment order with PAYED respository", func(mt *mtest.T) { // test code
+	mt.Run("got error on invalid object id hex when updating payment order with PAYED respository", func(mt *mtest.T) {
 		database, err := database.ConfigMongo(mt.Client, mt.Name())
 
-		assert.NoError(t, err)
+		assert.NoError(mt, err)
 
 		repo := repositories.NewPaymentRepository(database)
 		mt.AddMockResponses(mtest.CreateSuccessResponse())
 
 		err = repo.FinishPaymentWithSuccess(context.TODO(), "123")
-		assert.Error(t, err)
+		assert.Error(mt, err)
 	})
 
-	mt.Run("got error when updating payment order with PAYED respository", func(mt *mtest.T) { // test code
+	mt.Run("got error when updating payment order with PAYED respository", func(mt *mtest.T) {
 		database, err := database.ConfigMongo(mt.Client, mt.Name())
 
-		assert.NoError(t, err)
+		assert.NoError(mt, err)
 
 		repo := repositories.NewPaymentRepository(database)
 		mt.AddMockResponses(mtest.CreateWriteErrorsResponse(mtest.WriteError{
@@ -81,37 +81,37 @@ func TestPaymentRepository(t *testing.T) {
 		}))
 
 		err = repo.FinishPaymentWithSuccess(context.TODO(), "6738ccbbf05e936dcc11a986")
-		assert.Error(t, err)
+		assert.Error(mt, err)
 	})
 
-	mt.Run("got success when updating payment order with ERROR respository", func(mt *mtest.T) { // test code
+	mt.Run("got success when updating payment order with ERROR respository", func(mt *mtest.T) {
 		database, err := database.ConfigMongo(mt.Client, mt.Name())
 
-		assert.NoError(t, err)
+		assert.NoError(mt, err)
 
 		repo := repositories.NewPaymentRepository(database)
 		mt.AddMockResponses(mtest.CreateSuccessResponse())
 
 		err = repo.FinishPaymentWithError(context.TODO(), "6738ccbbf05e936dcc11a986")
-		assert.NoError(t, err)
+		assert.NoError(mt, err)
 	})
 
-	mt.Run("got error on invalid object id hex when updating payment order with ERROR respository", func(mt *mtest.T) { // test code
+	mt.Run("got error on invalid object id hex when updating payment order with ERROR respository", func(mt *mtest.T) {
 		database, err := database.ConfigMongo(mt.Client, mt.Name())
 
-		assert.NoError(t, err)
+		assert.NoError(mt, err)
 
 		repo := repositories.NewPaymentRepository(database)
 		mt.AddMockResponses(mtest.CreateSuccessResponse())
 
 		err = repo.FinishPaymentWithError(context.TODO(), "123")
-		assert.Error(t, err)
+		assert.Error(mt, err)
 	})
 
-	mt.Run("got error when updating payment order with ERROR respository", func(mt *mtest.T) { // test code
+	mt.Run("got error when updating payment order with ERROR respository", func(mt *mtest.T) {
 		database, err := database.ConfigMongo(mt.Client, mt.Name())
 
-		assert.NoError(t, err)
+		assert.NoError(mt, err)
 
 		repo := repositories.NewPaymentRepository(database)
 		mt.AddMockResponses(mtest.CreateWriteErrorsResponse(mtest.WriteError{
@@ -121,6 +121,6 @@ func TestPaymentRepository(t *testing.T) {
 		}))
 
 		err = repo.FinishPaymentWithError(context.TODO(), "6738ccbbf05e936dcc11a986")
-		assert.Error(t, err)
+		assert.Error(mt, err)
 	})
 }
