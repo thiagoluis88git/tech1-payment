@@ -38,6 +38,13 @@ func newExternalPaymentEvent() dto.ExternalPaymentEvent {
 	}
 }
 
+func newExternalPaymentEventWrongTopic() dto.ExternalPaymentEvent {
+	return dto.ExternalPaymentEvent{
+		Resource: "Resource",
+		Topic:    "merchant_orderXYZ",
+	}
+}
+
 func mockDate() int64 {
 	return time.Now().Unix()
 }
@@ -264,6 +271,23 @@ func TestQRCodePaymentUseCase(t *testing.T) {
 		mockQRCodePaymentepo.AssertExpectations(t)
 
 		assert.NoError(t, err)
+	})
+
+	t.Run("got error on wrong topic Repository when finishing order payment use case", func(t *testing.T) {
+		t.Parallel()
+
+		mockOrderRepo := new(MockOrderRepository)
+		mockPaymentRepo := new(MockPaymentRepository)
+		mockQRCodePaymentepo := new(MockQRCodePaymentRepository)
+		sut := NewFinishOrderForQRCodeUseCase(mockQRCodePaymentepo, mockOrderRepo, mockPaymentRepo)
+
+		ctx := context.TODO()
+
+		err := sut.Execute(ctx, "token", newExternalPaymentEventWrongTopic())
+
+		mockQRCodePaymentepo.AssertExpectations(t)
+
+		assert.Error(t, err)
 	})
 
 	t.Run("got error on GetQRCodePaymentData Repository when finishing order payment use case", func(t *testing.T) {
