@@ -1,5 +1,7 @@
 package model
 
+import "time"
+
 const (
 	PaymentPayingStatus = "Pagando"
 	PaymentPayedStatus  = "Pago"
@@ -10,8 +12,9 @@ const (
 )
 
 type Payment struct {
-	CustomerCPF   *string `bson:"customerCPF"`
-	TotalPrice    float64 `bson:"totalPrice"`
-	PaymentStatus string  `bson:"paymentStatus"`
-	PaymentType   string  `bson:"paymentType"`
+	CustomerCPF   *string   `bson:"customerCPF"`
+	TotalPrice    float64   `bson:"totalPrice"`
+	PaymentStatus string    `bson:"paymentStatus"`
+	PaymentType   string    `bson:"paymentType"`
+	PaymentDate   time.Time `bson:"paymentDate"`
 }

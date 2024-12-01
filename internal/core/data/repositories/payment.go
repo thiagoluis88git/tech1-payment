@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"time"
 
 	"github.com/thiagoluis88git/tech1-payment/internal/core/data/model"
 	"github.com/thiagoluis88git/tech1-payment/internal/core/domain/dto"
@@ -39,6 +40,7 @@ func (repository *PaymentRepository) CreatePaymentOrder(ctx context.Context, pay
 		TotalPrice:    payment.TotalPrice,
 		PaymentType:   payment.PaymentType,
 		PaymentStatus: model.PaymentPayingStatus,
+		PaymentDate:   time.Now(),
 	}
 
 	result, err := repository.db.Conn.
